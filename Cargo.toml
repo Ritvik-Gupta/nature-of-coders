@@ -8,6 +8,8 @@ default-run = "main"
 
 [dependencies]
 itertools-num = "0.1.3"
+lazy_static = "1.4.0"
 nannou = "0.18.1"
 noise = "0.8.2"
 rand = "0.8.5"
+structstruck = "0.2.2"

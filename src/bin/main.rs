@@ -1,7 +1,7 @@
 use noise::{NoiseFn, Perlin};
 
 fn main() {
-    println!("Hello, world!");
+    println!("{}", -10.2 % 2.0);
     let perlin = Perlin::new(Perlin::DEFAULT_SEED);
 
     for i in 0..10 {

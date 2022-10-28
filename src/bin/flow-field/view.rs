@@ -1,46 +1,82 @@
-use super::Model;
-use itertools_num::linspace;
+use crate::{
+    model::Model,
+    utils::{closest_checkpoint_position, evenly_distributed_points_in, perlin_to_range},
+};
+use lazy_static::lazy_static;
 use nannou::{
-    prelude::{map_range, pt2, vec3, STEELBLUE},
+    prelude::{hsla, map_range, Hsla, Rgb, Vec2, BLACK},
     App, Frame,
 };
-use noise::{NoiseFn, Perlin};
+use noise::NoiseFn;
+use std::f32::consts::PI;
+
+lazy_static! {
+    static ref FLOW_FIELD_VECTOR_COLOR: Hsla = hsla(218.0 / 360.0, 0.8, 0.4, 0.4);
+}
+const BACKGROUND_COLOR: Rgb<u8> = BLACK;
 
 pub fn view(app: &App, model: &Model, frame: Frame) {
-    let perlin = Perlin::new(3);
-
     let draw = app.draw();
-    draw.background().color(STEELBLUE);
+    draw.background().color(BACKGROUND_COLOR);
 
-    let (l, r, b, t) = app.window_rect().l_r_b_t();
+    let window_rect = app.window_rect();
 
-    for x in linspace(l, r, 30) {
-        for y in linspace(b, t, 30) {
-            let hue = perlin_to_range(
-                perlin.get([x as f64, y as f64, app.time as f64 / 3.0]),
-                0.0,
-                1.0,
-            );
-            let rotation = perlin_to_range(
-                perlin.get([x as f64, y as f64, app.time as f64 / 3.0]),
-                0.0,
-                360.0,
-            );
+    evenly_distributed_points_in(&window_rect).for_each(|(x, y)| {
+        let pos = Vec2::new(x, y);
 
-            let draw = draw.translate(vec3(x, y, 0.0));
+        let rotation = perlin_to_range(
+            model
+                .perlin_rng
+                .get([pos.x as f64, pos.y as f64, model.view.field.time as f64]),
+            -PI,
+            PI,
+        );
 
-            draw.arrow()
-                .start(pt2(0.0, 0.0))
-                .end(pt2(10.0, 0.0))
-                .z_degrees(rotation)
-                .hsl(hue, model.chosen_saturation, 0.1)
-                .finish();
-        }
+        let draw = draw.translate(pos.extend(0.0));
+
+        draw.arrow()
+            .start(Vec2::ZERO)
+            .end(Vec2::new(10.0, 0.0))
+            .rotate(rotation)
+            .color(FLOW_FIELD_VECTOR_COLOR.clone())
+            .finish();
+    });
+
+    let (l, r, b, t) = window_rect.l_r_b_t();
+
+    model.view.particles.iter().for_each(|particle| {
+        let pos = particle.position;
+
+        let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
+
+        draw.ellipse()
+            .xy(pos)
+            .radius(3.0)
+            .color(hsla(color_hue, 0.8, 0.30, 0.75))
+            .finish();
+    });
+
+    {
+        let pos = closest_checkpoint_position(model.window.mouse.location);
+
+        let rotation = perlin_to_range(
+            model
+                .perlin_rng
+                .get([pos.x as f64, pos.y as f64, model.view.field.time as f64]),
+            -PI,
+            PI,
+        );
+
+        let draw = draw.translate(pos.extend(0.0));
+
+        draw.arrow()
+            .start(Vec2::ZERO)
+            .end(Vec2::new(20.0, 0.0))
+            .rotate(rotation)
+            .stroke_weight(3.0)
+            .color(FLOW_FIELD_VECTOR_COLOR.color)
+            .finish();
     }
 
     draw.to_frame(app, &frame).unwrap();
-}
-
-fn perlin_to_range(perlin_noise: f64, min: f32, max: f32) -> f32 {
-    map_range(perlin_noise as f32, -1.0, 1.0, min, max)
 }
