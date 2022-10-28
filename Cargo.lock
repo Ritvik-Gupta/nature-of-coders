@@ -1203,6 +1203,7 @@ name = "nature-of-coders"
 version = "0.1.0"
 dependencies = [
  "itertools-num",
+ "lazy_static",
  "nannou",
  "noise 0.8.2",
  "rand 0.8.5",
