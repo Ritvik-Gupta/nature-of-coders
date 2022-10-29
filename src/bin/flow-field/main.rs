@@ -1,14 +1,17 @@
 mod event;
 mod model;
+mod update;
 mod utils;
 mod view;
 
-use event::{event, update};
+use event::event;
 use model::Model;
+use update::update;
 
 fn main() {
     nannou::app(Model::for_app)
         .event(event)
+        .update(update)
         .update(update)
         .size(600, 600)
         .run();

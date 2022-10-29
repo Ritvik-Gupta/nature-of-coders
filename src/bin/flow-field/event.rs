@@ -1,14 +1,10 @@
-use crate::{
-    model::{particle::Particle, Model},
-    utils::FIELD_TIME_NORMALIZATION_FACTOR,
-};
+use crate::model::{particle::Particle, Model};
 use nannou::{
     event::ElementState,
-    prelude::{Key, MouseButton, Update, WindowEvent},
+    prelude::{Key, MouseButton, WindowEvent},
     winit::event::DeviceEvent,
     App, Event,
 };
-use nannou_egui::egui;
 
 pub fn event(_app: &App, model: &mut Model, event: Event) {
     match event {
@@ -45,32 +41,5 @@ pub fn event(_app: &App, model: &mut Model, event: Event) {
             _ => {}
         },
         _ => {}
-    }
-}
-
-pub fn update(app: &App, model: &mut Model, update: Update) {
-    // Update the Particle positions relative to Flow Field
-    {
-        if !model.view.field.is_paused {
-            model.view.field.time +=
-                update.since_last.as_secs_f32() / FIELD_TIME_NORMALIZATION_FACTOR;
-        }
-
-        model.view.particles.iter_mut().for_each(|particle| {
-            particle.update(
-                &mut model.perlin_rng,
-                model.view.field.time,
-                &app.window_rect(),
-            );
-        });
-    }
-
-    // Update the EGUI interface
-    {
-        model.egui.set_elapsed_time(update.since_start);
-        let ctx = model.egui.begin_frame();
-        egui::Window::new("Workshop window").show(&ctx, |ui| {
-            ui.heading("Hello World");
-        });
     }
 }

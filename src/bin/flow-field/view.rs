@@ -4,14 +4,14 @@ use crate::{
 };
 use lazy_static::lazy_static;
 use nannou::{
-    prelude::{map_range, Hsla, Rgb, Vec2, BLACK},
+    prelude::{hsla, map_range, Hsla, Rgb, Vec2, BLACK},
     App, Frame,
 };
 use noise::NoiseFn;
 use std::f32::consts::PI;
 
 lazy_static! {
-    static ref FLOW_FIELD_VECTOR_COLOR: Hsla = Hsla::new(218.0 / 360.0, 0.8, 0.4, 0.4);
+    static ref FLOW_FIELD_VECTOR_COLOR: Hsla = hsla(218.0 / 360.0, 0.8, 0.4, 0.25);
 }
 const BACKGROUND_COLOR: Rgb<u8> = BLACK;
 
@@ -48,13 +48,19 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
         let (l, r, b, t) = window_rect.l_r_b_t();
         model.view.particles.iter().for_each(|particle| {
             let pos = particle.position;
-
             let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
 
             draw.ellipse()
                 .xy(pos)
                 .radius(3.0)
-                .color(Hsla::new(color_hue, 0.8, 0.30, 0.75))
+                .color(hsla(color_hue, 0.8, 0.30, 0.75))
+                .finish();
+
+            draw.polyline()
+                .points_colored(particle.trail.iter().map(|pos| {
+                    let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
+                    (*pos, hsla(color_hue, 0.8, 0.30, 0.75))
+                }))
                 .finish();
         });
     }

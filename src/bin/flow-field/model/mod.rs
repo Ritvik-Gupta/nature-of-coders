@@ -1,5 +1,5 @@
 pub mod particle;
-mod view_config;
+pub mod view_config;
 mod window_config;
 
 use crate::utils::{evenly_distributed_points_in, FIELD_TIME_NORMALIZATION_FACTOR};
@@ -53,6 +53,7 @@ impl Model {
                     is_paused: false,
                 },
                 particles,
+                trail_length: 0,
             },
         }
     }
