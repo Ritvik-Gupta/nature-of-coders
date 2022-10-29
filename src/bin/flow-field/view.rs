@@ -4,14 +4,14 @@ use crate::{
 };
 use lazy_static::lazy_static;
 use nannou::{
-    prelude::{hsla, map_range, Hsla, Rgb, Vec2, BLACK},
+    prelude::{map_range, Hsla, Rgb, Vec2, BLACK},
     App, Frame,
 };
 use noise::NoiseFn;
 use std::f32::consts::PI;
 
 lazy_static! {
-    static ref FLOW_FIELD_VECTOR_COLOR: Hsla = hsla(218.0 / 360.0, 0.8, 0.4, 0.4);
+    static ref FLOW_FIELD_VECTOR_COLOR: Hsla = Hsla::new(218.0 / 360.0, 0.8, 0.4, 0.4);
 }
 const BACKGROUND_COLOR: Rgb<u8> = BLACK;
 
@@ -21,6 +21,7 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
 
     let window_rect = app.window_rect();
 
+    // Draw the Flow Field Vectors
     evenly_distributed_points_in(&window_rect).for_each(|(x, y)| {
         let pos = Vec2::new(x, y);
 
@@ -42,20 +43,23 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
             .finish();
     });
 
-    let (l, r, b, t) = window_rect.l_r_b_t();
+    // Draw the Particles
+    {
+        let (l, r, b, t) = window_rect.l_r_b_t();
+        model.view.particles.iter().for_each(|particle| {
+            let pos = particle.position;
 
-    model.view.particles.iter().for_each(|particle| {
-        let pos = particle.position;
+            let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
 
-        let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
+            draw.ellipse()
+                .xy(pos)
+                .radius(3.0)
+                .color(Hsla::new(color_hue, 0.8, 0.30, 0.75))
+                .finish();
+        });
+    }
 
-        draw.ellipse()
-            .xy(pos)
-            .radius(3.0)
-            .color(hsla(color_hue, 0.8, 0.30, 0.75))
-            .finish();
-    });
-
+    // Draw the Checkpoint arrow for nearest Flow Field Vector
     {
         let pos = closest_checkpoint_position(model.window.mouse.location);
 
@@ -79,4 +83,5 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
     }
 
     draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();
 }

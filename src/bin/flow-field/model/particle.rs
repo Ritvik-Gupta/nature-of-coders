@@ -23,8 +23,8 @@ impl Particle {
 
         let (l, r, b, t) = window_rect.l_r_b_t();
 
-        self.position.x = (self.position.x + r - l) % (r - l);
-        self.position.y = (self.position.y + t - b) % (t - b);
+        self.position.x = (self.position.x + r - l) % (r - l) + l;
+        self.position.y = (self.position.y + t - b) % (t - b) + b;
     }
 
     fn update_velocity(&mut self) {
