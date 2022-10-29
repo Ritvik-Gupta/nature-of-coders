@@ -46,6 +46,8 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
     // Draw the Particles
     {
         let (l, r, b, t) = window_rect.l_r_b_t();
+        let max_trail_alpha = model.view.trail_length as f32;
+
         model.view.particles.iter().for_each(|particle| {
             let pos = particle.position;
             let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
@@ -57,10 +59,18 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
                 .finish();
 
             draw.polyline()
-                .points_colored(particle.trail.iter().map(|pos| {
-                    let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
-                    (*pos, hsla(color_hue, 0.8, 0.30, 0.75))
-                }))
+                .points_colored(
+                    particle
+                        .trail
+                        .iter()
+                        .enumerate()
+                        .map(|(idx, &pos)| ((idx + 1) as f32, pos))
+                        .map(|(alpha_idx, pos)| {
+                            let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
+
+                            (pos, hsla(color_hue, 0.8, 0.30, alpha_idx / max_trail_alpha))
+                        }),
+                )
                 .finish();
         });
     }

@@ -1,4 +1,6 @@
-use crate::utils::{closest_checkpoint_position, compare_range_sign, perlin_to_range};
+use crate::utils::{
+    closest_checkpoint_position, compare_range_sign, perlin_to_range, MAX_PARTICLE_VELOCITY,
+};
 use nannou::prelude::{Rect, Vec2, Vec2Rotate};
 use noise::{NoiseFn, Perlin};
 use std::{collections::VecDeque, f32::consts::PI};
@@ -41,14 +43,14 @@ impl Particle {
 
     fn update_velocity(&mut self) {
         self.velocity += self.acceleration;
-        self.velocity = self.velocity.clamp_length_max(7.5);
+        self.velocity = self.velocity.clamp_length_max(MAX_PARTICLE_VELOCITY);
     }
 
     pub fn update(
         &mut self,
         trail_length: usize,
         field_time: f32,
-        perlin_rng: &mut Perlin,
+        perlin_rng: &Perlin,
         window_rect: &Rect,
     ) {
         let closest_field_vector = closest_checkpoint_position(self.position);
@@ -62,7 +64,7 @@ impl Particle {
             -PI,
             PI,
         );
-        self.acceleration = Vec2::new(2.5, 0.0).rotate(field_acl_direction);
+        self.acceleration = Vec2::new(MAX_PARTICLE_VELOCITY / 3.0, 0.0).rotate(field_acl_direction);
 
         self.update_velocity();
         self.update_position_in(trail_length, window_rect);

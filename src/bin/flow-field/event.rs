@@ -33,10 +33,10 @@ pub fn event(_app: &App, model: &mut Model, event: Event) {
                 }
             }
             Some(WindowEvent::MousePressed(MouseButton::Left)) => {
-                model.window.mouse.is_pressed = true
+                // model.window.mouse.is_pressed = true
             }
             Some(WindowEvent::MouseReleased(MouseButton::Left)) => {
-                model.window.mouse.is_pressed = false
+                // model.window.mouse.is_pressed = false
             }
             _ => {}
         },

@@ -1,6 +1,7 @@
 use crate::{model::Model, utils::FIELD_TIME_NORMALIZATION_FACTOR};
 use nannou::{prelude::Update, App};
 use nannou_egui::egui;
+use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 
 pub fn update(app: &App, model: &mut Model, update: Update) {
     // Update the Particle positions relative to Flow Field
@@ -10,12 +11,13 @@ pub fn update(app: &App, model: &mut Model, update: Update) {
                 update.since_last.as_secs_f32() / FIELD_TIME_NORMALIZATION_FACTOR;
         }
 
-        model.view.particles.iter_mut().for_each(|particle| {
+        let window_rect = app.window_rect();
+        model.view.particles.par_iter_mut().for_each(|particle| {
             particle.update(
                 model.view.trail_length,
                 model.view.field.time,
-                &mut model.perlin_rng,
-                &app.window_rect(),
+                &model.perlin_rng,
+                &window_rect,
             );
         });
     }

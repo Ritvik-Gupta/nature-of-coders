@@ -1292,6 +1292,7 @@ dependencies = [
  "nannou_egui",
  "noise 0.8.2",
  "rand 0.8.5",
+ "rayon",
  "structstruck",
 ]
 
