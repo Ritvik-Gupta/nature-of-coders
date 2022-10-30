@@ -2,7 +2,7 @@ use itertools_num::linspace;
 use nannou::prelude::{map_range, Rect, Vec2};
 
 pub const FIELD_TIME_NORMALIZATION_FACTOR: f32 = 4.0;
-pub const VECTOR_SEPARATION: f32 = 30.0;
+pub const VECTOR_SEPARATION: f32 = 50.0;
 pub const MAX_PARTICLE_VELOCITY: f32 = 6.0;
 pub const FIELD_ANGLE: f32 = std::f32::consts::TAU;
 

@@ -1,14 +1,13 @@
 pub mod particle;
 pub mod settings_config;
-pub mod view_config;
+mod view_config;
 mod window_config;
 
-use crate::utils::{evenly_distributed_points_in, FIELD_TIME_NORMALIZATION_FACTOR};
+use crate::utils::FIELD_TIME_NORMALIZATION_FACTOR;
 use crate::view::view;
 use nannou::{prelude::Vec2, window, App};
 use nannou_egui::Egui;
 use noise::Perlin;
-use particle::Particle;
 use rand::Rng;
 use view_config::{FieldConfig, ViewConfig};
 use window_config::{MouseConfig, WindowConfig};
@@ -36,11 +35,6 @@ impl Model {
         let window = app.window(window_id).unwrap();
         let egui = Egui::from_window(&window);
 
-        let particles = evenly_distributed_points_in(&app.window_rect())
-            .map(Vec2::from)
-            .map(Particle::new)
-            .collect();
-
         Self {
             _window_id: window_id,
             egui,
@@ -56,7 +50,7 @@ impl Model {
                     time: app.time / FIELD_TIME_NORMALIZATION_FACTOR,
                     is_paused: false,
                 },
-                particles,
+                particles: Vec::new(),
             },
             settings: SettingsConfig::default(),
         }
