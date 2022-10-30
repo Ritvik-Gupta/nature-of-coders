@@ -6,7 +6,6 @@ structstruck::strike! {
         pub field: struct FieldConfig {
             pub time: f32,
             pub is_paused: bool,
-        },
-        pub trail_length: usize
+        }
     }
 }

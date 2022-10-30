@@ -1,9 +1,9 @@
 use crate::utils::{
-    closest_checkpoint_position, compare_range_sign, perlin_to_range, MAX_PARTICLE_VELOCITY,
+    closest_checkpoint_position, compare_range_sign, perlin_to_field_angle, MAX_PARTICLE_VELOCITY,
 };
 use nannou::prelude::{Rect, Vec2, Vec2Rotate};
 use noise::{NoiseFn, Perlin};
-use std::{collections::VecDeque, f32::consts::PI};
+use std::collections::VecDeque;
 
 pub struct Particle {
     pub position: Vec2,
@@ -55,15 +55,11 @@ impl Particle {
     ) {
         let closest_field_vector = closest_checkpoint_position(self.position);
 
-        let field_acl_direction = perlin_to_range(
-            perlin_rng.get([
-                closest_field_vector.x as f64,
-                closest_field_vector.y as f64,
-                field_time as f64,
-            ]),
-            -PI,
-            PI,
-        );
+        let field_acl_direction = perlin_to_field_angle(perlin_rng.get([
+            closest_field_vector.x as f64,
+            closest_field_vector.y as f64,
+            field_time as f64,
+        ]));
         self.acceleration = Vec2::new(MAX_PARTICLE_VELOCITY / 3.0, 0.0).rotate(field_acl_direction);
 
         self.update_velocity();

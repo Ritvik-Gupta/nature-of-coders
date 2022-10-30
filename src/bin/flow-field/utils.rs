@@ -4,6 +4,7 @@ use nannou::prelude::{map_range, Rect, Vec2};
 pub const FIELD_TIME_NORMALIZATION_FACTOR: f32 = 4.0;
 pub const VECTOR_SEPARATION: f32 = 30.0;
 pub const MAX_PARTICLE_VELOCITY: f32 = 6.0;
+pub const FIELD_ANGLE: f32 = std::f32::consts::TAU;
 
 pub fn compare_range_sign(value: f32, lower: f32, upper: f32) -> f32 {
     if value < lower {
@@ -15,8 +16,8 @@ pub fn compare_range_sign(value: f32, lower: f32, upper: f32) -> f32 {
     }
 }
 
-pub fn perlin_to_range(perlin_noise: f64, min: f32, max: f32) -> f32 {
-    map_range(perlin_noise as f32, -1.0, 1.0, min, max)
+pub fn perlin_to_field_angle(perlin_noise: f64) -> f32 {
+    map_range(perlin_noise as f32, -1.0, 1.0, -FIELD_ANGLE, FIELD_ANGLE)
 }
 
 pub fn evenly_distributed_points_in(window_rect: &Rect) -> impl Iterator<Item = (f32, f32)> {

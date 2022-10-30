@@ -1,4 +1,5 @@
 pub mod particle;
+pub mod settings_config;
 pub mod view_config;
 mod window_config;
 
@@ -12,12 +13,15 @@ use rand::Rng;
 use view_config::{FieldConfig, ViewConfig};
 use window_config::{MouseConfig, WindowConfig};
 
+use self::settings_config::SettingsConfig;
+
 pub struct Model {
     pub _window_id: window::Id,
     pub egui: Egui,
     pub perlin_rng: Perlin,
     pub window: WindowConfig,
     pub view: ViewConfig,
+    pub settings: SettingsConfig,
 }
 
 impl Model {
@@ -53,8 +57,8 @@ impl Model {
                     is_paused: false,
                 },
                 particles,
-                trail_length: 0,
             },
+            settings: SettingsConfig::default(),
         }
     }
 }
