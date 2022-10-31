@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use noise::{NoiseFn, Perlin};
 
 fn main() {

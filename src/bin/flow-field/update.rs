@@ -9,7 +9,7 @@ use rayon::prelude::{IntoParallelRefMutIterator, ParallelIterator};
 pub fn update(app: &App, model: &mut Model, update: Update) {
     // Update the Particle positions relative to Flow Field
     {
-        if !model.view.field.is_paused {
+        if !model.settings.to_pause_field {
             model.view.field.time +=
                 update.since_last.as_secs_f32() / FIELD_TIME_NORMALIZATION_FACTOR;
         }
@@ -36,6 +36,7 @@ fn update_egui(app: &App, model: &mut Model, update: Update) {
         trail_length,
         to_show_flow_field,
         to_show_particle_head,
+        to_pause_field,
     } = &mut model.settings;
 
     egui::Window::new("Workshop").show(&ctx, |ui| {
@@ -43,6 +44,7 @@ fn update_egui(app: &App, model: &mut Model, update: Update) {
             ui.horizontal_wrapped(|ui| {
                 ui.code(format!("FPS : {:.1}", app.fps()));
             });
+            ui.separator();
 
             ui.horizontal_wrapped(|ui| {
                 ui.label("Flow Field Vectors");
@@ -57,6 +59,14 @@ fn update_egui(app: &App, model: &mut Model, update: Update) {
             });
 
             ui.horizontal_wrapped(|ui| {
+                ui.label("Field Loop");
+                ui.radio_value(to_pause_field, true, "Pause");
+                ui.radio_value(to_pause_field, false, "Loop");
+            });
+
+            ui.separator();
+            ui.horizontal_wrapped(|ui| {
+                ui.label("Trail Length");
                 ui.add(egui::Slider::new(trail_length, 10..=200));
             });
         });

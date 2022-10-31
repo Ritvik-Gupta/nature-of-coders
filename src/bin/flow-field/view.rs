@@ -1,7 +1,8 @@
 use crate::{
-    model::Model,
+    model::{particle::TrailMarker, Model},
     utils::{closest_checkpoint_position, evenly_distributed_points_in, perlin_to_field_angle},
 };
+use itertools::Itertools;
 use lazy_static::lazy_static;
 use nannou::{
     prelude::{hsla, map_range, Hsla, Rgb, Vec2, BLACK},
@@ -59,20 +60,24 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
                     .finish();
             }
 
-            draw.polyline()
-                .points_colored(
-                    particle
-                        .trail
-                        .iter()
-                        .enumerate()
-                        .map(|(idx, &pos)| ((idx + 1) as f32, pos))
-                        .map(|(alpha_idx, pos)| {
+            particle
+                .trail
+                .iter()
+                .enumerate()
+                .group_by(|(_, marker)| marker.eq(&&TrailMarker::Outside))
+                .into_iter()
+                .step_by(2)
+                .for_each(|(_, markers)| {
+                    draw.polyline()
+                        .points_colored(markers.map(|(idx, marker)| {
+                            let alpha_idx = (idx + 1) as f32;
+                            let pos = marker.position();
                             let color_hue = map_range(pos.x + pos.y, l + b, r + t, 0.0, 1.0);
 
                             (pos, hsla(color_hue, 0.8, 0.30, alpha_idx / max_trail_alpha))
-                        }),
-                )
-                .finish();
+                        }))
+                        .finish();
+                });
         });
     }
 

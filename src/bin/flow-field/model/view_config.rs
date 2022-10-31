@@ -5,7 +5,6 @@ structstruck::strike! {
         pub particles: Vec<Particle>,
         pub field: struct FieldConfig {
             pub time: f32,
-            pub is_paused: bool,
         }
     }
 }

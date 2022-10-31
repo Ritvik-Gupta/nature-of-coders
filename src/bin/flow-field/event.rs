@@ -12,7 +12,7 @@ pub fn event(_app: &App, model: &mut Model, event: Event) {
             DeviceEvent::Key(keyboard_input) => {
                 match (keyboard_input.state, keyboard_input.virtual_keycode) {
                     (ElementState::Pressed, Some(Key::P)) => {
-                        model.view.field.is_paused = !model.view.field.is_paused
+                        model.settings.to_pause_field = !model.settings.to_pause_field
                     }
                     _ => {}
                 }

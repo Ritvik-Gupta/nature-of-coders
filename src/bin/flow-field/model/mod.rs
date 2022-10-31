@@ -3,16 +3,18 @@ pub mod settings_config;
 mod view_config;
 mod window_config;
 
+use self::{
+    particle::Particle,
+    settings_config::SettingsConfig,
+    view_config::{FieldConfig, ViewConfig},
+    window_config::{MouseConfig, WindowConfig},
+};
 use crate::utils::FIELD_TIME_NORMALIZATION_FACTOR;
 use crate::view::view;
 use nannou::{prelude::Vec2, window, App};
 use nannou_egui::Egui;
 use noise::Perlin;
 use rand::Rng;
-use view_config::{FieldConfig, ViewConfig};
-use window_config::{MouseConfig, WindowConfig};
-
-use self::settings_config::SettingsConfig;
 
 pub struct Model {
     pub _window_id: window::Id,
@@ -48,9 +50,8 @@ impl Model {
             view: ViewConfig {
                 field: FieldConfig {
                     time: app.time / FIELD_TIME_NORMALIZATION_FACTOR,
-                    is_paused: false,
                 },
-                particles: Vec::new(),
+                particles: vec![Particle::new(Vec2::ZERO)],
             },
             settings: SettingsConfig::default(),
         }

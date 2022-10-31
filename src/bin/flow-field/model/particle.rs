@@ -7,7 +7,7 @@ use std::collections::VecDeque;
 
 pub struct Particle {
     pub position: Vec2,
-    pub trail: VecDeque<Vec2>,
+    pub trail: VecDeque<TrailMarker>,
     velocity: Vec2,
     acceleration: Vec2,
 }
@@ -16,14 +16,14 @@ impl Particle {
     pub fn new(position: Vec2) -> Self {
         Self {
             position,
-            trail: VecDeque::with_capacity(1),
+            trail: VecDeque::new(),
             velocity: Vec2::ZERO,
             acceleration: Vec2::ZERO,
         }
     }
 
     fn update_position_in(&mut self, trail_length: usize, window_rect: &Rect) {
-        self.trail.push_back(self.position);
+        self.trail.push_back(TrailMarker::Inside(self.position));
         while self.trail.len() > trail_length {
             self.trail.pop_front();
         }
@@ -34,7 +34,7 @@ impl Particle {
         let (l, r, b, t) = window_rect.l_r_b_t();
 
         if pos.x < l || pos.x > r || pos.y < b || pos.y > t {
-            self.trail.clear();
+            self.trail.push_back(TrailMarker::Outside);
         }
 
         pos.x += (l - r) * compare_range_sign(pos.x, l, r);
@@ -64,5 +64,20 @@ impl Particle {
 
         self.update_velocity();
         self.update_position_in(trail_length, window_rect);
+    }
+}
+
+#[derive(PartialEq)]
+pub enum TrailMarker {
+    Inside(Vec2),
+    Outside,
+}
+
+impl TrailMarker {
+    pub fn position(&self) -> Vec2 {
+        match self {
+            Self::Inside(pos) => *pos,
+            Self::Outside => Vec2::new(f32::MAX, f32::MAX),
+        }
     }
 }
