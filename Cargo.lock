@@ -616,6 +616,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "flow-field"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+ "itertools-num",
+ "lazy_static",
+ "nannou",
+ "nannou_egui",
+ "noise 0.8.2",
+ "rand 0.8.5",
+ "rayon",
+ "structstruck",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -765,6 +780,21 @@ checksum = "3edd93c6756b4dfaf2709eafcc345ba2636565295c198a9cfbf75fa5e3e00b06"
 dependencies = [
  "color_quant",
  "weezl",
+]
+
+[[package]]
+name = "gjk-algorithm"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+ "itertools-num",
+ "lazy_static",
+ "nannou",
+ "nannou_egui",
+ "noise 0.8.2",
+ "rand 0.8.5",
+ "rayon",
+ "structstruck",
 ]
 
 [[package]]
@@ -1289,21 +1319,6 @@ dependencies = [
  "instant",
  "num_cpus",
  "wgpu",
-]
-
-[[package]]
-name = "nature-of-coders"
-version = "0.1.0"
-dependencies = [
- "itertools",
- "itertools-num",
- "lazy_static",
- "nannou",
- "nannou_egui",
- "noise 0.8.2",
- "rand 0.8.5",
- "rayon",
- "structstruck",
 ]
 
 [[package]]
