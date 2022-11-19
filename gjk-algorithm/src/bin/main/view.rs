@@ -10,9 +10,57 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
     let win_rect = window.rect();
     draw.background().rgb(0.11, 0.12, 0.13);
 
+    draw_graph_sheet(&draw, win_rect);
+
+    let mouse_pos = app.mouse.position();
+
+    // Ellipse and position text at mouse.
+    draw.ellipse().wh([5.0; 2].into()).xy(mouse_pos);
+    if model.view.highlight_point {
+        draw.ellipse()
+            .no_fill()
+            .stroke_weight(2.0)
+            .wh([15.0; 2].into())
+            .xy(mouse_pos);
+    }
+    draw.text(&format!("[{:.1}, {:.1}]", mouse_pos.x, mouse_pos.y))
+        .xy(mouse_pos + Vec2::new(0.0, 20.0))
+        .font_size(14)
+        .color(WHITE);
+
+    draw_shapes(&draw, model, mouse_pos);
+
+    draw.to_frame(app, &frame).unwrap();
+}
+
+fn draw_shapes(draw: &Draw, model: &Model, mouse_pos: Vec2) {
+    model.shapes.iter().for_each(|shape| {
+        draw.polygon()
+            .stroke_weight(1.0)
+            .points(shape.vertices.iter().cloned())
+            .color(nannou::prelude::CADETBLUE)
+            .finish();
+    });
+
+    if let Some(shape) = &model.settings.drawing_shape {
+        draw.polygon()
+            .stroke_weight(2.0)
+            .points(
+                shape
+                    .vertices
+                    .iter()
+                    .cloned()
+                    .chain(std::iter::once(mouse_pos)),
+            )
+            .color(nannou::prelude::SEASHELL)
+            .finish();
+    }
+}
+
+fn draw_graph_sheet(draw: &Draw, win_rect: Rect) {
     // 100-step and 10-step grids.
-    draw_grid(&draw, &win_rect, 100.0, 1.0);
-    draw_grid(&draw, &win_rect, 25.0, 0.5);
+    draw_grid(draw, &win_rect, 100.0, 1.0);
+    draw_grid(draw, &win_rect, 25.0, 0.5);
 
     // Crosshair.
     let crosshair_color = gray(0.5);
@@ -67,19 +115,6 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
         .right_justify()
         .color(crosshair_color)
         .y(y_off);
-
-    // Ellipse at mouse.
-    draw.ellipse().wh([5.0; 2].into()).xy(app.mouse.position());
-
-    // Mouse position text.
-    let mouse = app.mouse.position();
-    let pos = format!("[{:.1}, {:.1}]", mouse.x, mouse.y);
-    draw.text(&pos)
-        .xy(mouse + Vec2::new(0.0, 20.0))
-        .font_size(14)
-        .color(WHITE);
-
-    draw.to_frame(app, &frame).unwrap();
 }
 
 fn draw_grid(draw: &Draw, win: &Rect, step: f32, weight: f32) {

@@ -12,7 +12,6 @@ fn main() {
     nannou::app(Model::for_app)
         .event(event)
         .update(update)
-        .update(update)
         .size(600, 600)
         .run();
 }
