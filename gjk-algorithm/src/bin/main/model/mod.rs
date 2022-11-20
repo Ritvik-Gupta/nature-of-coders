@@ -1,18 +1,16 @@
-pub mod settings_config;
+mod database;
 mod view_config;
 
 use crate::view::view;
-use gjk_algorithm::Shape;
+use database::Database;
 use nannou::{window, App};
 use nannou_egui::Egui;
-use settings_config::SettingsConfig;
 use view_config::ViewConfig;
 
 pub struct Model {
     pub _window_id: window::Id,
     pub egui: Egui,
-    pub shapes: Vec<Shape>,
-    pub settings: SettingsConfig,
+    pub db: Database,
     pub view: ViewConfig,
 }
 
@@ -31,8 +29,10 @@ impl Model {
         Self {
             _window_id: window_id,
             egui,
-            shapes: Vec::new(),
-            settings: SettingsConfig::default(),
+            db: Database {
+                shapes: Vec::new(),
+                drawing_shape: None,
+            },
             view: ViewConfig::default(),
         }
     }

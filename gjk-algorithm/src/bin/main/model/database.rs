@@ -1,6 +1,6 @@
 use gjk_algorithm::Shape;
 
-#[derive(Default)]
-pub struct SettingsConfig {
+pub struct Database {
+    pub shapes: Vec<Shape>,
     pub drawing_shape: Option<Shape>,
 }

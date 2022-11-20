@@ -26,9 +26,9 @@ pub fn update(app: &App, model: &mut Model, update: Update) {
     }
 
     // Update the EGUI interface
-    update_egui(app, model, update);
+    update_egui(app, model, &update);
 }
-fn update_egui(app: &App, model: &mut Model, update: Update) {
+fn update_egui(app: &App, model: &mut Model, update: &Update) {
     model.egui.set_elapsed_time(update.since_start);
     let ctx = model.egui.begin_frame();
 

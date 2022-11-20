@@ -17,16 +17,17 @@ pub fn event(app: &App, model: &mut Model, event: Event) {
                 ..
             }),
         ) => {
-            if key == Key::S {
-                match (model.settings.drawing_shape.is_some(), key_state) {
-                    (true, ElementState::Released) => {
+            if key == Key::LShift {
+                match (&model.db.drawing_shape, key_state) {
+                    (Some(shape), ElementState::Released) => {
                         model.view.highlight_point = false;
-                        model
-                            .shapes
-                            .push(model.settings.drawing_shape.take().unwrap());
+                        if shape.vertices.len() > 2 {
+                            model.db.shapes.push(shape.clone());
+                        }
+                        model.db.drawing_shape = None;
                     }
-                    (false, ElementState::Pressed) => {
-                        model.settings.drawing_shape = Some(Shape::default())
+                    (None, ElementState::Pressed) => {
+                        model.db.drawing_shape = Some(Shape::default())
                     }
                     _ => {}
                 }
@@ -35,7 +36,7 @@ pub fn event(app: &App, model: &mut Model, event: Event) {
         Event::WindowEvent {
             simple: window_event,
             ..
-        } => match (&mut model.settings.drawing_shape, window_event) {
+        } => match (&mut model.db.drawing_shape, window_event) {
             (Some(_), Some(WindowEvent::MousePressed(MouseButton::Left))) => {
                 model.view.highlight_point = true
             }
