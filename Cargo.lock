@@ -787,14 +787,8 @@ name = "gjk-algorithm"
 version = "0.1.0"
 dependencies = [
  "itertools",
- "itertools-num",
- "lazy_static",
  "nannou",
  "nannou_egui",
- "noise 0.8.2",
- "rand 0.8.5",
- "rayon",
- "structstruck",
 ]
 
 [[package]]

@@ -44,11 +44,13 @@ fn draw_shapes(draw: &Draw, model: &Model, mouse_pos: Vec2) {
     });
 
     if let Some(shape) = &model.db.drawing_shape {
-        draw.polygon()
-            .stroke_weight(2.0)
-            .points(shape.vertices.iter().cloned())
-            .color(nannou::prelude::LIGHTBLUE)
-            .finish();
+        if !shape.vertices.is_empty() {
+            draw.polygon()
+                .stroke_weight(2.0)
+                .points(shape.vertices.iter().cloned())
+                .color(nannou::prelude::LIGHTBLUE)
+                .finish();
+        }
 
         if let Some(&last_vertex) = shape.vertices.last() {
             draw.line()
