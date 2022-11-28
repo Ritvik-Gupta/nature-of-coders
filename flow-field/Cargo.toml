@@ -10,9 +10,9 @@ default-run = "main"
 itertools = "0.10.5"
 itertools-num = "0.1.3"
 lazy_static = "1.4.0"
-nannou = "0.18.1"
-nannou_egui = "0.5.0"
 noise = "0.8.2"
 rand = "0.8.5"
 rayon = "1.5.3"
 structstruck = "0.2.2"
+nannou = { workspace = true }
+nannou_egui = { workspace = true }

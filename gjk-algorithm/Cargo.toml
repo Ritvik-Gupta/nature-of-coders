@@ -8,5 +8,5 @@ default-run = "main"
 
 [dependencies]
 itertools = "0.10.5"
-nannou = "0.18.1"
-nannou_egui = "0.5.0"
+nannou = { workspace = true }
+nannou_egui = { workspace = true }
